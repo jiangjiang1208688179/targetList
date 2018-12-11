@@ -14,7 +14,7 @@
       </el-header>
       <el-container>
         <el-aside width="200px" style="border-top:1px solid #ccc; height:90vh; border-right: 1px solid #ccc">
-          <el-row :span="12">
+          <!-- <el-row :span="12">
             <el-menu default-active="1" class="el-menu-vertical-demo"   @close="handleClose"
   active-text-color="#ffd04b">
               <el-menu-item index="1"> 
@@ -30,30 +30,29 @@
                 <span slot="title">所有列表</span>
               </el-menu-item>
             </el-menu>
-          </el-row>
+          </el-row> -->
         </el-aside>
-        <el-main>Main</el-main>
+        <el-main>
+          <home></home>
+        </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 <script>
+  import Home from './views/Home.vue'
   export default {
+    components:{
+      Home
+    },
     data() {
       return {
-        activeIndex: '1',
-        activeIndex2: '1'
+        activeIndex: '1'
       };
     },
     methods: {
       handleSelect(key, keyPath) {
-        // console.log(key, keyPath);  //此处可以直接设置导航跳转路径
-      },
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
+        console.log(key, keyPath);  //此处可以直接设置导航跳转路径
       }
     }
   }
