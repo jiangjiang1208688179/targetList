@@ -13,25 +13,6 @@
         <router-view/>
       </el-header>
       <el-container>
-        <el-aside width="200px" style="border-top:1px solid #ccc; height:90vh; border-right: 1px solid #ccc">
-          <!-- <el-row :span="12">
-            <el-menu default-active="1" class="el-menu-vertical-demo"   @close="handleClose"
-  active-text-color="#ffd04b">
-              <el-menu-item index="1"> 
-                <i class="el-icon-menu"></i>
-                <span slot="title">待完成</span>
-              </el-menu-item>
-              <el-menu-item index="2"> 
-                <i class="el-icon-menu"></i>
-                <span slot="title">已完成</span>
-              </el-menu-item>
-              <el-menu-item index="3"> 
-                <i class="el-icon-menu"></i>
-                <span slot="title">所有列表</span>
-              </el-menu-item>
-            </el-menu>
-          </el-row> -->
-        </el-aside>
         <el-main>
           <home></home>
         </el-main>
