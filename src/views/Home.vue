@@ -1,14 +1,14 @@
 <template>
   <div class="home">
-    <div @click="nowBoxTarget(index)" v-for="(item, index) in cardList" :key="index" class="box-card" v-bind:class="{boxTarget:index==nowBox}">
-      <el-card>
+    <div id="card-flex">
+      <div class="card" v-bind:class="{boxTarget:index==nowBox}" @click="nowBoxTarget(index)" v-for="(item, index) in cardList" :key="index">
         <!-- <el-checkbox v-model="checked" v-bind:class="{checkBox:checked}" @change="checkBoxColor">备选项</el-checkbox> -->
         <!-- 该事件不能放在el-cart组件上，会失效 -->
-        <div slot="header" class="clearfix">
+        <div class="cardHead">
           <span>{{item.listId}}</span>
         </div>
-        <div class="cardContain">
-          <div style="margin-bottom:10px;">
+        <div class="cardBody">
+          <div style="margin-bottom:10px;margin-top:5px;">
             <el-button size="mini" @click="createTarget(index)">新建任务</el-button>
             <div v-show="createItem[index]">
               <input type="text" v-model="createTargetName" class="createInput">
@@ -20,9 +20,13 @@
           <div v-for="(item1,index1) in item.target" :key="index1" class="text item">
             <div class="targetItem" @mouseover="mouseOver(index,index1)" @mouseout="mouseOut(index, index1)">
               <div style="width:30px;height:30px" class="checkBoxStatus" @click="delectItem(index,index1)" v-bind:class="{checkBoxStatus1:item1.status}"></div>
-              <div v-show="!item1.isEdite" v-bind:class="{targetItemStatus:item1.status}">{{item1.name}}</div>
+              <div v-show="!(isEdite.a==index && isEdite.b == index1)" v-bind:class="{targetItemStatus:item1.status}">{{item1.name}}</div>
               <!-- 移动、编辑删除操作 -->
+<<<<<<< HEAD
               <div class="editDeleteIco" v-show='item1.mouseOver&&!item1.isEdite&&index==nowBox || (index==nowBox && pull.a==index && pull.b==index1 && (!item1.isEdite))'>
+=======
+              <div class="editDeleteIco" v-show='nowBox==index && item1.mouseOver && !(isEdite.a==index && isEdite.b == index1) || (nowBox==index && !(isEdite.a==index && isEdite.b == index1) && pull.a==index && pull.b==index1)'>
+>>>>>>> 8d7245015c8185339c71589520500a042da013a5
                 <!-- 任务移动操作 -->
                 <!-- command事件本身有一个回调事件，在添加其它参数时，需要使用$event，来代表它自带的回调事件，否则会出现找不到参数的情况，若不添加其它参数，$event可省略 -->
                 <el-dropdown @command="changeTargetBox($event, index, index1)">
@@ -39,17 +43,18 @@
                 <i class="el-icon-edit" @click="editItem(index, index1)"></i>
                 <i class="el-icon-delete" @click="deleteItem(index, index1)"></i>
               </div>
-              <div v-show="item1.isEdite">
+              <div v-show="isEdite.a==index && isEdite.b == index1">
                 <input type="text" v-model="editeTargetName" class="createInput">
-                <el-button size="mini" @click="saveEditeItem(index, index1)">确定</el-button>
+                <el-button style="margin-left:10px;" size="mini" @click="saveEditeItem(index, index1)">确定</el-button>
                 <el-button size="mini" @click="editecancel(index, index1)">取消</el-button>
               </div>
             </div>
           </div>
+          <div class="alreadyComplete" @click="alreadyComplete">查看已完成成任务</div>
         </div>
-      </el-card>
-    </div>
 
+      </div>
+    </div>
   </div>
 </template>
 
@@ -67,7 +72,8 @@ export default {
       checked: false,
       checkBox: false,
       editeTargetName: "",
-      pull: {a:-1,b:-1},
+      pull: { a: -1, b: -1 }, //鼠标最后经过那个item
+      isEdite: { a: -1, b: -1 },
       // mouseOver: false,   //鼠标经过控制删除和编辑按钮
       cardList: [
         {
@@ -77,28 +83,25 @@ export default {
               name: "the first",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             },
             {
               name: "the second",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             },
             {
               name: "the thire",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             }
           ]
         },
@@ -109,28 +112,25 @@ export default {
               name: "the first1",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             },
             {
               name: "the second1",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             },
             {
               name: "the thire1",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             }
           ]
         },
@@ -141,28 +141,25 @@ export default {
               name: "the first2",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             },
             {
               name: "the second2",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             },
             {
               name: "the thire2",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
-              mouseOver: false,
-              isEdite: false
+              mouseOver: false
             }
           ]
         }
@@ -194,7 +191,7 @@ export default {
           name: this.createTargetName,
           status: false,
           isDelete: false,
-          completeDate: "",
+          completeDate: {},
           chooseList: index
         });
       } else {
@@ -204,10 +201,11 @@ export default {
     },
     editItem(index, index1) {
       console.log(index, index1);
-      this.cardList[index].target[index1].isEdite = true;
+      this.isEdite.a = index;
+      this.isEdite.b = index1;
       var now = this.cardList[index].target[index1];
       this.editeTargetName = now.name;
-      this.cardList[index].target.splice(index1, 1, now);
+      // this.cardList[index].target.splice(index1, 1, now);
     },
     cancel(index) {
       this.createItem.splice(index, 1, false);
@@ -219,8 +217,8 @@ export default {
     //单个target相关操作
     mouseOver(index, index1) {
       var now;
-      this.pull.a=index;
-      this.pull.b=index1;
+      this.pull.a = index;
+      this.pull.b = index1;
       this.cardList[index].target[index1].mouseOver = true;
       now = this.cardList[index];
       this.cardList.splice(index, 1, now);
@@ -257,34 +255,72 @@ export default {
     saveEditeItem(index, index1) {
       if (this.editeTargetName) {
         this.cardList[index].target[index1].name = this.editeTargetName;
-        this.editecancel(index, index1)
+        this.editecancel(index, index1);
       }
     },
     editecancel(index, index1) {
-      this.cardList[index].target[index1].isEdite = false;
-        var now = this.cardList[index].target[index1];
-        this.cardList[index].target.splice(index1, 1, now);
+      this.isEdite.a = -1;
+      this.isEdite.b = -1;
+      // var now = this.cardList[index].target[index1];
+      // this.cardList[index].target.splice(index1, 1, now);
+    },
+    alreadyComplete(index, index1){
+      var date, completeDate = new Date();
+      date.year =  completeDate.getFullYear();
+      date.month = completeDate.getMonth()+1;
+      date.day = completeDate.getDate();
+      date.week = completeDate.getDay();
+      this.cardList[index].target[index1].completeDate = date;
     }
   }
 };
 </script>
 <style>
-body {
-  display: absolute;
+#card-flex {
+  display: flex;
+  display: -webkit-flex; /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-flex; /*OLD - Firefox 19- H5不用考虑 */
+  display: -mz-flex; /*TWEENER IE 10 */
+  display: -ms-flex;
+  justify-content: space-around;
+  -webkit-justify-content: space-around;
+  -moz-justify-content: space-around;
+  -o-justify-content: space-around;
+  -ms-justify-content: space-around;
+
+  align-items: flex-start;
+  -webkit-align-items: flex-start;
+  -moz-align-items: flex-start;
+  -o-align-items: flex-start;
+  -ms-align-items: flex-start;
 }
-.cardContain {
+.card {
+  /* display: block; */
   text-align: left;
-  margin-top: 0px;
+  border: 1px solid #dcdcdc;
+  width: 30%;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px #dcdcdc;
+}
+.cardHead {
+  padding: 10px;
+  border-bottom: 1px solid #dcdcdc;
+}
+.cardBody {
+  padding: 10px;
+}
+.item {
+  margin-bottom: 14px;
 }
 .text {
   font-size: 18px;
   text-align: left;
 }
-
-.item {
-  margin-bottom: 14px;
+.cardContain {
+  text-align: left;
+  margin-top: 0px;
 }
-
+/* 
 .clearfix:before,
 .clearfix:after {
   display: table;
@@ -298,9 +334,10 @@ body {
   display: inline-block;
   margin: 20px;
   width: 30%;
-}
+} */
 .boxTarget {
-  /* width: 30%; */
+  /* display: inline-block; */
+  width: 30%;
   border: 1px solid #409dff;
   border-radius: 5px;
 }
@@ -309,7 +346,7 @@ body {
   -moz-appearance: none;
   border: 0px;
   border-bottom: 2px solid #409dff;
-  height: 25px;
+  height: 22px;
   font-size: 18px;
 }
 .targetItem div {
@@ -321,7 +358,7 @@ body {
 }
 .targetItemStatus,
 .checkBox {
-  color: #ccc;
+  color: #dcdcdc;
 }
 .checkBoxStatus {
   background-image: url("../assets/checkBox.svg");
@@ -345,5 +382,9 @@ body {
 }
 .el-icon-arrow-down {
   font-size: 12px;
+}
+.alreadyComplete{
+  font-size: 12px;
+  color: #409eff;
 }
 </style>
