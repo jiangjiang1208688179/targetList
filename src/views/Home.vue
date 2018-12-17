@@ -46,7 +46,7 @@
               </div>
             </div>
           </div>
-          <div class="alreadyComplete">查看已完成成任务</div>
+          <div class="alreadyComplete" @click="alreadyComplete">查看已完成成任务</div>
         </div>
 
       </div>
@@ -79,7 +79,7 @@ export default {
               name: "the first",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             },
@@ -87,7 +87,7 @@ export default {
               name: "the second",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             },
@@ -95,7 +95,7 @@ export default {
               name: "the thire",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             }
@@ -108,7 +108,7 @@ export default {
               name: "the first1",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             },
@@ -116,7 +116,7 @@ export default {
               name: "the second1",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             },
@@ -124,7 +124,7 @@ export default {
               name: "the thire1",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             }
@@ -137,7 +137,7 @@ export default {
               name: "the first2",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             },
@@ -145,7 +145,7 @@ export default {
               name: "the second2",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             },
@@ -153,7 +153,7 @@ export default {
               name: "the thire2",
               status: false,
               isDelete: false,
-              completeDate: "",
+              completeDate: {},
               chooseList: 0,
               mouseOver: false
             }
@@ -187,7 +187,7 @@ export default {
           name: this.createTargetName,
           status: false,
           isDelete: false,
-          completeDate: "",
+          completeDate: {},
           chooseList: index
         });
       } else {
@@ -259,6 +259,14 @@ export default {
       this.isEdite.b = -1;
       // var now = this.cardList[index].target[index1];
       // this.cardList[index].target.splice(index1, 1, now);
+    },
+    alreadyComplete(index, index1){
+      var date, completeDate = new Date();
+      date.year =  completeDate.getFullYear();
+      date.month = completeDate.getMonth()+1;
+      date.day = completeDate.getDate();
+      date.week = completeDate.getDay();
+      this.cardList[index].target[index1].completeDate = date;
     }
   }
 };
