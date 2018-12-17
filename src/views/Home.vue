@@ -22,7 +22,7 @@
               <div style="width:30px;height:30px" class="checkBoxStatus" @click="delectItem(index,index1)" v-bind:class="{checkBoxStatus1:item1.status}"></div>
               <div v-show="!item1.isEdite" v-bind:class="{targetItemStatus:item1.status}">{{item1.name}}</div>
               <!-- 移动、编辑删除操作 -->
-              <div class="editDeleteIco" v-show='item1.mouseOver&&!item1.isEdite&&index==nowBox || (pull.a==index && pull.b==index1)'>
+              <div class="editDeleteIco" v-show='item1.mouseOver&&!item1.isEdite&&index==nowBox || (index==nowBox && pull.a==index && pull.b==index1 && (!item1.isEdite))'>
                 <!-- 任务移动操作 -->
                 <!-- command事件本身有一个回调事件，在添加其它参数时，需要使用$event，来代表它自带的回调事件，否则会出现找不到参数的情况，若不添加其它参数，$event可省略 -->
                 <el-dropdown @command="changeTargetBox($event, index, index1)">
