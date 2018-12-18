@@ -51,17 +51,22 @@
 
       </div>
     </div>
+    <already-task v-bind:dateTarget="dateTarget"></already-task>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-
+import alreadyTask from '@/components/alreadyTask.vue'
 export default {
   name: "home",
+  components: {
+    alreadyTask
+  },
   data() {
     return {
+      dateTarget: [],
       nowBox: 0,
       createItem: [false, false, false],
       createTargetName: "",
@@ -79,7 +84,7 @@ export default {
               name: "the first",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             },
@@ -87,7 +92,7 @@ export default {
               name: "the second",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             },
@@ -95,7 +100,7 @@ export default {
               name: "the thire",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             }
@@ -108,7 +113,7 @@ export default {
               name: "the first1",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             },
@@ -116,7 +121,7 @@ export default {
               name: "the second1",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             },
@@ -124,7 +129,7 @@ export default {
               name: "the thire1",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             }
@@ -137,7 +142,7 @@ export default {
               name: "the first2",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             },
@@ -145,7 +150,7 @@ export default {
               name: "the second2",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             },
@@ -153,7 +158,7 @@ export default {
               name: "the thire2",
               status: false,
               isDelete: false,
-              completeDate: {},
+              completeDate: '',
               chooseList: 0,
               mouseOver: false
             }
@@ -167,10 +172,9 @@ export default {
       this.nowBox = index;
     },
     delectItem(index, index1) {
-      console.log(index, "  ", index1);
-      this.cardList[index].target[index1].status = !this.cardList[index].target[
-        index1
-      ].status;
+      // console.log(index, "  ", index1);
+      this.cardList[index].target[index1].status = !this.cardList[index].target[index1].status;
+      this.cardList[index].target[index1].completeDate = new Date().getTime();
     },
     checkBoxColor() {
       this.checkBox = !this.checkBox;
@@ -187,7 +191,7 @@ export default {
           name: this.createTargetName,
           status: false,
           isDelete: false,
-          completeDate: {},
+          completeDate: '',
           chooseList: index
         });
       } else {
@@ -261,12 +265,36 @@ export default {
       // this.cardList[index].target.splice(index1, 1, now);
     },
     alreadyComplete(index, index1){
-      var date, completeDate = new Date();
-      date.year =  completeDate.getFullYear();
-      date.month = completeDate.getMonth()+1;
-      date.day = completeDate.getDate();
-      date.week = completeDate.getDay();
-      this.cardList[index].target[index1].completeDate = date;
+      var date = [];
+      //循环出列表中所有status为true的 name和completeDate,形成一个新的数组，传给dateTarget变量最终传给子组件
+      for (var i = 0; i<this.cardList.length; i++){
+        for(let item of this.cardList[i].target){
+          if(item.status) {
+            //vue中需要注意的是，使用对象a.xx的时候,必须先要定义a的类型是‘对象’， 否者一直会报错
+            var k = {};
+            k.date = item.completeDate;
+            k.name = item.name;
+            date[date.length] = k;
+          }
+        }
+      }
+      // date = [
+      //   { date: 1545099084455, name: "a1" },
+      //   { date: 1545099084451, name: "a2" },
+      //   { date: 1545099082155, name: "a3" },
+      //   { date: 1545099802255, name: "b1" },
+      //   { date: 1545099801435, name: "b2" },
+      //   { date: 1545099801215, name: "b3" },
+      //   { date: 1545019802255, name: "b1" }
+      // ];
+      // var date, completeDate = new Date();
+      // date.year =  completeDate.getFullYear();
+      // date.month = completeDate.getMonth()+1;
+      // date.day = completeDate.getDate();
+      // date.week = completeDate.getDay();
+      // date.date = completeDate.getTime()
+      // this.cardList[index].target[index1].completeDate = date;
+      this.dateTarget = date;
     }
   }
 };
