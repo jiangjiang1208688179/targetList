@@ -39,7 +39,15 @@
   }
 </script>
 <style>
+body{
+  margin: 0px;
+}
 #app {
+  width: 100vw;
+  height: 100vh;
+  background-color:#faf7e6;
+  /* background-image: url('../img/bag/bg3.jpg');
+  background-size: cover; */
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

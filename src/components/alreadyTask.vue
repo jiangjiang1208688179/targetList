@@ -102,8 +102,12 @@ export default {
 </script>
 <style>
 .alreadyTarg{
-  width: 80%;
-  border: 1px solid #cccccc;
+  margin-left:20%;
+  margin-right: 20%;
+  background-color: white;
+  width: 60%;
+  height: 70%;
+  box-shadow: 0px 0px 2px 5px #F8F4E3;
   border-radius: 5px;
 }
 .alreadyItem{

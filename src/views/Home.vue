@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <div id="card-flex">
+  <div class="home" style="align:center">
+    <div id="card-flex" v-show="!isAlready">
       <div class="card" v-bind:class="{boxTarget:index==nowBox}" @click="nowBoxTarget(index)" v-for="(item, index) in cardList" :key="index">
         <!-- <el-checkbox v-model="checked" v-bind:class="{checkBox:checked}" @change="checkBoxColor">备选项</el-checkbox> -->
         <!-- 该事件不能放在el-cart组件上，会失效 -->
@@ -51,7 +51,8 @@
 
       </div>
     </div>
-    <already-task v-bind:dateTarget="dateTarget"></already-task>
+    <div v-show="isAlready" @click="isAlreadyO" style="width:50%;height:30px;margin-left:25%;margin-right:25%;margin-bottom:-5px;background-color:#F0B775;border-radius:5px;position:absolute;color:white;line-height:30px;">返回首页</div>
+    <already-task v-bind:dateTarget="dateTarget" v-show="isAlready" style="position:absolute;margin-top:30px;"></already-task>
   </div>
 </template>
 
@@ -75,6 +76,7 @@ export default {
       editeTargetName: "",
       pull: { a: -1, b: -1 }, //鼠标最后经过那个item
       isEdite: { a: -1, b: -1 },
+      isAlready: false,
       // mouseOver: false,   //鼠标经过控制删除和编辑按钮
       cardList: [
         {
@@ -264,17 +266,22 @@ export default {
       // var now = this.cardList[index].target[index1];
       // this.cardList[index].target.splice(index1, 1, now);
     },
+    isAlreadyO(){
+      this.isAlready = false;
+    },
     alreadyComplete(index, index1){
       var date = [];
+      this.isAlready = true;
       //循环出列表中所有status为true的 name和completeDate,形成一个新的数组，传给dateTarget变量最终传给子组件
       for (var i = 0; i<this.cardList.length; i++){
-        for(let item of this.cardList[i].target){
+        for(let [index,item] of this.cardList[i].target.entries()){ //这里用到了for...of 的索引，所以需要添加entries()
           if(item.status) {
             //vue中需要注意的是，使用对象a.xx的时候,必须先要定义a的类型是‘对象’， 否者一直会报错
             var k = {};
             k.date = item.completeDate;
             k.name = item.name;
             date[date.length] = k;
+            this.cardList[i].target.splice(index, 1);//此处是为了在返回时，删除已经勾选的项目
           }
         }
       }
@@ -300,6 +307,9 @@ export default {
 };
 </script>
 <style>
+.home{
+  text-align: center;
+}
 #card-flex {
   display: flex;
   display: -webkit-flex; /* OLD - iOS 6-, Safari 3.1-6 */
@@ -320,10 +330,12 @@ export default {
 }
 .card {
   /* display: block; */
+  background-image: url('../../img/bag5.jpg');
+  background-size: 100% 100%;
   text-align: left;
   border: 1px solid #dcdcdc;
   width: 30%;
-  border-radius: 5px;
+  /* border-:5px;: 5px; */
   box-shadow: 0px 0px 10px #dcdcdc;
 }
 .cardHead {
@@ -332,6 +344,9 @@ export default {
 }
 .cardBody {
   padding: 10px;
+  padding-left:10%;
+  padding-right:10%;
+  padding-bottom: 5%;
 }
 .item {
   margin-bottom: 14px;
@@ -344,25 +359,10 @@ export default {
   text-align: left;
   margin-top: 0px;
 }
-/* 
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both;
-}
-
-.box-card {
-  display: inline-block;
-  margin: 20px;
-  width: 30%;
-} */
 .boxTarget {
   /* display: inline-block; */
   width: 30%;
-  border: 1px solid #409dff;
+  border: 4px solid #a8dba8;
   border-radius: 5px;
 }
 .createInput {
@@ -382,7 +382,7 @@ export default {
 }
 .targetItemStatus,
 .checkBox {
-  color: #dcdcdc;
+  color: #ccc;
 }
 .checkBoxStatus {
   background-image: url("../assets/checkBox.svg");
@@ -400,6 +400,9 @@ export default {
   display: inline-block;
   margin-left: 15px;
 }
+.el-icon-edit, .el-icon-delete{
+  cursor: pointer;
+}
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
@@ -408,6 +411,7 @@ export default {
   font-size: 12px;
 }
 .alreadyComplete{
+  cursor: pointer;
   font-size: 12px;
   color: #409eff;
 }
