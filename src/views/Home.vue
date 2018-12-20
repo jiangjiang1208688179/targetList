@@ -59,6 +59,7 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
+import axios from 'axios'
 import alreadyTask from '@/components/alreadyTask.vue'
 export default {
   name: "home",
@@ -170,6 +171,12 @@ export default {
     };
   },
   methods: {
+    haha(){
+      axios.get("/haha").then(res => {
+        console.log(res);
+        // ...
+      });
+    },
     nowBoxTarget(index) {
       this.nowBox = index;
     },
