@@ -22,3 +22,4 @@ ajax.interceptors.response.use(config => {
 })
 // 导出模块
 export default ajax;
+module.exports

@@ -10,11 +10,11 @@
         <div class="cardBody">
           <div style="margin-bottom:10px;margin-top:5px;">
             <el-button size="mini" @click="createTarget(index)">新建任务</el-button>
-            <div v-show="createItem[index]">
-              <input type="text" v-model="createTargetName" class="createInput">
-              <el-button size="mini" @click="saveCreateItem(index)">确定</el-button>
-              <el-button size="mini" @click="deleteCreateItem">删除</el-button>
-              <el-button size="mini" @click="cancel(index)">取消</el-button>
+            <div v-show="createItem[index]" class="addOption">
+              <input type="text" v-model="createTargetName" class="createInput" @keyup.enter="saveCreateItem(index)">
+              <div @click="saveCreateItem(index)">确定</div>
+              <div size="mini" @click="deleteCreateItem">删除</div>
+              <div size="mini" @click="cancel(index)">取消</div>
             </div>
           </div>
           <div v-for="(item1,index1) in item.target" :key="index1" class="text item">
@@ -48,7 +48,6 @@
           </div>
           <div class="alreadyComplete" @click="alreadyComplete">查看已完成成任务</div>
         </div>
-
       </div>
     </div>
     <div v-show="isAlready" @click="isAlreadyO" style="width:50%;height:30px;margin-left:25%;margin-right:25%;margin-bottom:-5px;background-color:#F0B775;border-radius:5px;position:absolute;color:white;line-height:30px;">返回首页</div>
@@ -79,102 +78,19 @@ export default {
       isEdite: { a: -1, b: -1 },
       isAlready: false,
       // mouseOver: false,   //鼠标经过控制删除和编辑按钮
-      cardList: [
-        {
-          listId: "今日计划",
-          target: [
-            {
-              name: "the first",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            },
-            {
-              name: "the second",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            },
-            {
-              name: "the thire",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            }
-          ]
-        },
-        {
-          listId: "明日计划",
-          target: [
-            {
-              name: "the first1",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            },
-            {
-              name: "the second1",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            },
-            {
-              name: "the thire1",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            }
-          ]
-        },
-        {
-          listId: "待完成",
-          target: [
-            {
-              name: "the first2",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            },
-            {
-              name: "the second2",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            },
-            {
-              name: "the thire2",
-              status: false,
-              isDelete: false,
-              completeDate: '',
-              chooseList: 0,
-              mouseOver: false
-            }
-          ]
-        }
-      ]
+      cardList: []
     };
   },
+
+  mounted(){
+    this.cardlist();
+  },
   methods: {
-    haha(){
-      axios.get("/haha").then(res => {
+  // mock数据模拟方法cardlist()
+    cardlist(){
+      axios.get("/cardList").then(res => {
         console.log(res);
-        // ...
+        this.cardList = res.data;
       });
     },
     nowBoxTarget(index) {
@@ -276,38 +192,35 @@ export default {
     isAlreadyO(){
       this.isAlready = false;
     },
-    alreadyComplete(index, index1){
+    alreadyComplete(){
       var date = [];
       this.isAlready = true;
       //循环出列表中所有status为true的 name和completeDate,形成一个新的数组，传给dateTarget变量最终传给子组件
-      for (var i = 0; i<this.cardList.length; i++){
-        for(let [index,item] of this.cardList[i].target.entries()){ //这里用到了for...of 的索引，所以需要添加entries()
-          if(item.status) {
-            //vue中需要注意的是，使用对象a.xx的时候,必须先要定义a的类型是‘对象’， 否者一直会报错
+      for (let i = 0; i<this.cardList.length; i++){
+        for(let j=0; j<this.cardList[i].target.length; j++){
+          var item = this.cardList[i].target[j];
+          if(item.status){
             var k = {};
             k.date = item.completeDate;
             k.name = item.name;
             date[date.length] = k;
-            this.cardList[i].target.splice(index, 1);//此处是为了在返回时，删除已经勾选的项目
+            this.cardList[i].target.splice(j, 1);//此处是为了在返回时，删除已经勾选的项目,但是splice的删除功能在for循环中是有坑的，会导致小标错乱，所以没删除一个，自动将循环的参数j--
+            j--;
           }
         }
+        // for(let [index,item] of this.cardList[i].target.entries()){ //这里用到了for...of 的索引，所以需要添加entries()
+        //   if(item.status) {
+        //     //vue中需要注意的是，使用对象a.xx的时候,必须先要定义a的类型是‘对象’， 否者一直会报错
+        //     var k = {};
+        //     k.date = item.completeDate;
+        //     k.name = item.name;
+        //     date[date.length] = k;
+        //     console.log('111111',i,'  ',index);
+        //     this.cardList[i].target.splice(index, 1);//此处是为了在返回时，删除已经勾选的项目
+        //     index--;
+        //   }
+        // }
       }
-      // date = [
-      //   { date: 1545099084455, name: "a1" },
-      //   { date: 1545099084451, name: "a2" },
-      //   { date: 1545099082155, name: "a3" },
-      //   { date: 1545099802255, name: "b1" },
-      //   { date: 1545099801435, name: "b2" },
-      //   { date: 1545099801215, name: "b3" },
-      //   { date: 1545019802255, name: "b1" }
-      // ];
-      // var date, completeDate = new Date();
-      // date.year =  completeDate.getFullYear();
-      // date.month = completeDate.getMonth()+1;
-      // date.day = completeDate.getDate();
-      // date.week = completeDate.getDay();
-      // date.date = completeDate.getTime()
-      // this.cardList[index].target[index1].completeDate = date;
       this.dateTarget = date;
     }
   }
@@ -358,6 +271,18 @@ export default {
 .item {
   margin-bottom: 14px;
 }
+.addOption{
+  margin-top:10px;
+}
+.addOption div{
+  display: inline-block;
+  width:30px;
+  height: 15px;
+  font-size: 14px;
+  margin-left:8px;
+  color: #409eff;
+  cursor: pointer;
+}
 .text {
   font-size: 18px;
   text-align: left;
@@ -373,6 +298,7 @@ export default {
   border-radius: 5px;
 }
 .createInput {
+  width:60%;
   -web-kit-appearance: none;
   -moz-appearance: none;
   border: 0px;
