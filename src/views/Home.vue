@@ -10,7 +10,7 @@
         <div class="cardBody">
           <div style="margin-bottom:10px;margin-top:5px;">
             <el-button size="mini" @click="createTarget(index)">新建任务</el-button>
-            <div v-show="createItem[index]" class="addOption">
+            <div v-show="createItem[index].status" class="addOption">
               <input type="text" v-model="createTargetName" class="createInput" @keyup.enter="saveCreateItem(index)">
               <div @click="saveCreateItem(index)">确定</div>
               <div size="mini" @click="deleteCreateItem">删除</div>
@@ -19,8 +19,8 @@
           </div>
           <div v-for="(item1,index1) in item.target" :key="index1" class="text item">
             <div class="targetItem" @mouseover="mouseOver(index,index1)" @mouseout="mouseOut(index, index1)">
-              <div style="width:30px;height:30px" class="checkBoxStatus" @click="delectItem(index,index1)" v-bind:class="{checkBoxStatus1:item1.status}"></div>
-              <div v-show="!(isEdite.a==index && isEdite.b == index1)" v-bind:class="{targetItemStatus:item1.status}">{{item1.name}}</div>
+              <div style="width:30px;height:30px" class="checkBoxStatus" @click="idFinished(index,index1)" v-bind:class="{checkBoxStatus1:item1.is_finished}"></div>
+              <div v-show="!(isEdite.a==index && isEdite.b == index1)" v-bind:class="{targetItemStatus:item1.is_finished}">{{item1.content}}</div>
               <!-- 移动、编辑删除操作 -->
               <div class="editDeleteIco" v-show='nowBox==index && item1.mouseOver && !(isEdite.a==index && isEdite.b == index1) || (nowBox==index && !(isEdite.a==index && isEdite.b == index1) && pull.a==index && pull.b==index1)'>
                 <!-- 任务移动操作 -->
@@ -58,8 +58,8 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-import axios from 'axios'
-import alreadyTask from '@/components/alreadyTask.vue'
+import axios from "axios";
+import alreadyTask from "@/components/alreadyTask.vue";
 export default {
   name: "home",
   components: {
@@ -69,7 +69,11 @@ export default {
     return {
       dateTarget: [],
       nowBox: 0,
-      createItem: [false, false, false],
+      createItem: [
+        { status: false, id: "5c2119db72836e4541b1fdfe" },
+        { status: false, id: "5c21f725c13ebb4ae6df1d00" },
+        { status: false, id: "5c22f19ac13ebb65c641c609" }
+      ], //确定当前是在那个地方创建新任务
       createTargetName: "",
       checked: false,
       checkBox: false,
@@ -78,49 +82,78 @@ export default {
       isEdite: { a: -1, b: -1 },
       isAlready: false,
       // mouseOver: false,   //鼠标经过控制删除和编辑按钮
-      cardList: []
+      cardList: [
+        {
+          listId: "今日计划",
+          target: []
+        },
+        {
+          listId: "明日计划",
+          target: []
+        },
+        {
+          listId: "今待安排",
+          target: []
+        }
+      ]
     };
   },
 
-  mounted(){
+  mounted() {
     this.cardlist();
   },
   methods: {
-  // mock数据模拟方法cardlist()
-    cardlist(){
-      axios.get("/cardList").then(res => {
-        console.log(res);
-        this.cardList = res.data;
+    // mock数据模拟方法cardlist()
+    cardlist() {
+      axios.get("/api/task/get_tasks").then(res => {
+        var list = res.data.data;
+        for (var item of list) {
+          if (item.todolist_id == "5c2119db72836e4541b1fdfe") {
+            this.cardList[0].target.push(item);
+          } else if (item.todolist_id == "5c21f725c13ebb4ae6df1d00") {
+            this.cardList[1].target.push(item);
+          } else if (item.todolist_id == "5c22f19ac13ebb65c641c609") {
+            this.cardList[2].target.push(item);
+          }
+        }
+        console.log("2324", this.cardList);
       });
     },
     nowBoxTarget(index) {
       this.nowBox = index;
     },
-    delectItem(index, index1) {
+    idFinished(index, index1) {
       // console.log(index, "  ", index1);
-      this.cardList[index].target[index1].status = !this.cardList[index].target[index1].status;
-      this.cardList[index].target[index1].completeDate = new Date().getTime();
+      this.cardList[index].target[index1].is_finished = !this.cardList[index]
+        .target[index1].is_finished;
+      this.cardList[index].target[index1].complete_time = new Date().getTime();
     },
     checkBoxColor() {
       this.checkBox = !this.checkBox;
     },
     //创建一个新的target
     createTarget(index) {
+      var now = this.createItem[index];
+      now.status = true;
       this.createTargetName = "";
-      this.createItem.splice(index, 1, true);
-      // this.createItem[index] = true;
+      this.createItem.splice(index, 1, now);
+      // this.createItem[index].status = true;
     },
     saveCreateItem(index) {
       if (this.createTargetName != "") {
-        this.cardList[index].target.unshift({
-          name: this.createTargetName,
-          status: false,
-          isDelete: false,
-          completeDate: '',
-          chooseList: index
-        });
+        axios
+          .post("/api/task/add", {
+            todolist_id: this.createItem[index].id,
+            content: this.createTargetName
+          })
+          .then(res => {
+            var result = res.data;
+            if (result.code == 20000) {
+              this.cardList[index].target.unshift(result.data);
+            }
+          });
       } else {
-        console.log("提示要关闭");
+        console.log("提示是否要关闭");
       }
       this.cancel(index);
     },
@@ -129,12 +162,14 @@ export default {
       this.isEdite.a = index;
       this.isEdite.b = index1;
       var now = this.cardList[index].target[index1];
-      this.editeTargetName = now.name;
+      this.editeTargetName = now.content;
       // this.cardList[index].target.splice(index1, 1, now);
     },
     cancel(index) {
-      this.createItem.splice(index, 1, false);
-      // this.createItem[index] = false;    //使用该方法数组元素改变，但是不会在视图上显示
+      var now = this.createItem[index];
+      now.status = false;
+      this.createItem.splice(index, 1, now);
+      // this.createItem[index].status = false;    //使用该方法数组元素改变，但是不会在视图上显示
     },
     deleteCreateItem() {
       this.createTargetName = "";
@@ -179,7 +214,7 @@ export default {
     },
     saveEditeItem(index, index1) {
       if (this.editeTargetName) {
-        this.cardList[index].target[index1].name = this.editeTargetName;
+        this.cardList[index].target[index1].content = this.editeTargetName;
         this.editecancel(index, index1);
       }
     },
@@ -189,31 +224,31 @@ export default {
       // var now = this.cardList[index].target[index1];
       // this.cardList[index].target.splice(index1, 1, now);
     },
-    isAlreadyO(){
+    isAlreadyO() {
       this.isAlready = false;
     },
-    alreadyComplete(){
+    alreadyComplete() {
       var date = [];
       this.isAlready = true;
-      //循环出列表中所有status为true的 name和completeDate,形成一个新的数组，传给dateTarget变量最终传给子组件
-      for (let i = 0; i<this.cardList.length; i++){
-        for(let j=0; j<this.cardList[i].target.length; j++){
+      //循环出列表中所有is_finished为true的 name和complete_time,形成一个新的数组，传给dateTarget变量最终传给子组件
+      for (let i = 0; i < this.cardList.length; i++) {
+        for (let j = 0; j < this.cardList[i].target.length; j++) {
           var item = this.cardList[i].target[j];
-          if(item.status){
+          if (item.is_finished) {
             var k = {};
-            k.date = item.completeDate;
-            k.name = item.name;
+            k.date = item.complete_time;
+            k.content = item.content;
             date[date.length] = k;
-            this.cardList[i].target.splice(j, 1);//此处是为了在返回时，删除已经勾选的项目,但是splice的删除功能在for循环中是有坑的，会导致小标错乱，所以没删除一个，自动将循环的参数j--
+            this.cardList[i].target.splice(j, 1); //此处是为了在返回时，删除已经勾选的项目,但是splice的删除功能在for循环中是有坑的，会导致小标错乱，所以没删除一个，自动将循环的参数j--
             j--;
           }
         }
         // for(let [index,item] of this.cardList[i].target.entries()){ //这里用到了for...of 的索引，所以需要添加entries()
-        //   if(item.status) {
+        //   if(item.is_finished) {
         //     //vue中需要注意的是，使用对象a.xx的时候,必须先要定义a的类型是‘对象’， 否者一直会报错
         //     var k = {};
-        //     k.date = item.completeDate;
-        //     k.name = item.name;
+        //     k.date = item.complete_time;
+        //     k.content = item.content;
         //     date[date.length] = k;
         //     console.log('111111',i,'  ',index);
         //     this.cardList[i].target.splice(index, 1);//此处是为了在返回时，删除已经勾选的项目
@@ -227,7 +262,7 @@ export default {
 };
 </script>
 <style>
-.home{
+.home {
   text-align: center;
 }
 #card-flex {
@@ -250,7 +285,7 @@ export default {
 }
 .card {
   /* display: block; */
-  background-image: url('../../img/bag5.jpg');
+  background-image: url("../../img/bag5.jpg");
   background-size: 100% 100%;
   text-align: left;
   border: 1px solid #dcdcdc;
@@ -264,22 +299,22 @@ export default {
 }
 .cardBody {
   padding: 10px;
-  padding-left:10%;
-  padding-right:10%;
+  padding-left: 10%;
+  padding-right: 10%;
   padding-bottom: 5%;
 }
 .item {
   margin-bottom: 14px;
 }
-.addOption{
-  margin-top:10px;
+.addOption {
+  margin-top: 10px;
 }
-.addOption div{
+.addOption div {
   display: inline-block;
-  width:30px;
+  width: 30px;
   height: 15px;
   font-size: 14px;
-  margin-left:8px;
+  margin-left: 8px;
   color: #409eff;
   cursor: pointer;
 }
@@ -298,7 +333,7 @@ export default {
   border-radius: 5px;
 }
 .createInput {
-  width:60%;
+  width: 60%;
   -web-kit-appearance: none;
   -moz-appearance: none;
   border: 0px;
@@ -333,7 +368,8 @@ export default {
   display: inline-block;
   margin-left: 15px;
 }
-.el-icon-edit, .el-icon-delete{
+.el-icon-edit,
+.el-icon-delete {
   cursor: pointer;
 }
 .el-dropdown-link {
@@ -343,7 +379,7 @@ export default {
 .el-icon-arrow-down {
   font-size: 12px;
 }
-.alreadyComplete{
+.alreadyComplete {
   cursor: pointer;
   font-size: 12px;
   color: #409eff;

@@ -3,28 +3,23 @@
       "listId": "今日计划",
       "target": [
         {
-          "name": "the first",
-          "status": false,
-          "isDelete": false,
+          "id": 2132,
+          "name": "the first",  //对应content
+          "status": false,  // 对应is_finished
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         },
         {
           "name": "the second",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         },
         {
           "name": "the thire",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         }
       ]
     },
@@ -34,26 +29,20 @@
         {
           "name": "the first1",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         },
         {
           "name": "the second1",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         },
         {
           "name": "the thire1",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         }
       ]
     },
@@ -63,26 +52,20 @@
         {
           "name": "the first2",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         },
         {
           "name": "the second2",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         },
         {
           "name": "the thire2",
           "status": false,
-          "isDelete": false,
           "completeDate": "",
-          "chooseList": 0,
-          "mouseOver": false
+          "chooseList": 0
         }
       ]
     }
