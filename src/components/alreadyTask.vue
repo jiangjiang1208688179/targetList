@@ -45,32 +45,32 @@ export default {
       switch (n) {
         case 1:
           return "星期一";
-          break;
+          // break;
         case 2:
           return "星期二";
-          break;
+          // break;
         case 3:
           return "星期三";
-          break;
+          // break;
         case 4:
           return "星期四";
-          break;
+          // break;
         case 5:
           return "星期五";
-          break;
+          // break;
         case 6:
           return "星期六";
-          break;
+          // break;
         case 7:
           return "星期日";
-          break;
+          // break;
       }
     },
     mapAlreadyDate(arr) {
       let newArr = []; //按天存储,哪一天完成了什么内容,最终显示的数据结构
       // [{date:{date:2018-12-12,ww:'星期一'},name:[target1,target2]}]
       for (var date of arr) {
-        let date1 = this.transDate(date.date); //date1有两个参数，一个date:2018-12-12，一个ww:星期几
+        let date1 = this.transDate(date.complete_time); //date1有两个参数，一个date:2018-12-12，一个ww:星期几
         let index = -1;
         let alreadyExists = newArr.some((newDate, j) => {
           // console.log(date1.date, newDate.date.date);
@@ -83,18 +83,19 @@ export default {
         if (!alreadyExists) {
           newArr.push({
             date: date1,
-            name: [date.name]
+            name: [date.content]
           });
         } else {
-          newArr[index].name.push(date.name);
+          newArr[index].name.push(date.content);
         }
       }
       return newArr;
     },
     alreadylist() {
-      axios.get("/alreadylist").then(res => {
-        this.dateTarget1 = res.data;
-        this.dateTarget1 = this["dateTarget1"].concat(this.dateTarget); //concat()拼接数据不是把拼接的数组直接赋给前边数组  而是返回一个新的连接后的数组，所以需要赋值；
+      axios.get("api/task/get_tasks",{is_complete:true}).then(res => {
+        this.dateTarget1 = res.data.data;
+        // console.log('RES:',res.data.data);
+        // this.dateTarget1 = this["dateTarget1"].concat(this.dateTarget); //concat()拼接数据不是把拼接的数组直接赋给前边数组  而是返回一个新的连接后的数组，所以需要赋值；
         this.alreadyList = this.mapAlreadyDate(this.dateTarget1);
       });
     }
@@ -107,7 +108,7 @@ export default {
   },
   mounted() {
     this.alreadylist();
-    console.log(this.dateTarget1);
+    // console.log(this.dateTarget1);
   }
 };
 </script>
