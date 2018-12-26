@@ -1,0 +1,267 @@
+{
+  "front-version": "2.19.1",
+  "version": 3,
+  "nodes": [
+    {
+      "type": "Project",
+      "id": "f3d9bb95-c68a-43c2-8e85-1d3f6fbfedae",
+      "lastModified": "2018-12-26T11:12:25.858+08:00",
+      "name": "mytask"
+    },
+    {
+      "type": "Service",
+      "id": "d89096fb-1fe9-490d-9d16-b190296803c1",
+      "lastModified": "2018-12-25T15:56:52.503+08:00",
+      "name": "list",
+      "parentId": "f3d9bb95-c68a-43c2-8e85-1d3f6fbfedae"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "textBody": "{\n  \"name\": \"我的清单1\"\n}"
+      },
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "118.24.156.129",
+        "path": "/api/list/add"
+      },
+      "id": "7d39418b-c4a7-4cae-aded-eac6f87e1ef7",
+      "lastModified": "2018-12-26T11:12:25.858+08:00",
+      "name": "add_list",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "d89096fb-1fe9-490d-9d16-b190296803c1"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "118.24.156.129",
+        "path": "/api/list/get_list"
+      },
+      "id": "9f797c7a-08c2-4994-a2dc-19b39e587c13",
+      "lastModified": "2018-12-26T10:50:33.138+08:00",
+      "name": "get_list",
+      "headers": [],
+      "assertions": [
+        {
+          "comparison": "Matches",
+          "subject": "ResponseStatus",
+          "path": "code",
+          "value": "/^2[0-9]{2}$/g"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "d89096fb-1fe9-490d-9d16-b190296803c1"
+    },
+    {
+      "type": "Service",
+      "id": "1d9470f0-88db-450f-89d2-ac02ddd3fb98",
+      "lastModified": "2018-12-25T15:56:52.504+08:00",
+      "name": "task",
+      "parentId": "f3d9bb95-c68a-43c2-8e85-1d3f6fbfedae"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "textBody": "{\n  \"todolist_id\":\"5c2119db72836e4541b1fdfe\",\n  \"content\":\"我的第一个任务\"\n}"
+      },
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "118.24.156.129",
+        "path": "/api/task/add"
+      },
+      "id": "03119120-067f-4db7-838f-2be3320dbcc2",
+      "lastModified": "2018-12-26T10:26:06.275+08:00",
+      "name": "add",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "1d9470f0-88db-450f-89d2-ac02ddd3fb98"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "textBody": "{ \"id\":\"5c22f170c13ebb65c641c608\",\n  \"todolist_id\":\"5c21f725c13ebb4ae6df1d00\",\n  \"content\":\"我的第一个任务\",\n  \"is_finished\": \"True\",\n  \"is_deleted\": \"False\",\n  \"complete_time\": \"1545674116\"\n}"
+      },
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "118.24.156.129",
+        "path": "/api/task/edit"
+      },
+      "id": "eba166e9-d10f-41ab-a967-a51ef84a9bf2",
+      "lastModified": "2018-12-26T11:11:53.874+08:00",
+      "name": "edit",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "1d9470f0-88db-450f-89d2-ac02ddd3fb98"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "textBody": ""
+      },
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "118.24.156.129",
+        "path": "/api/task/get_tasks"
+      },
+      "id": "f0f2f908-8f30-4a55-9a97-3b50d13f4276",
+      "lastModified": "2018-12-26T10:24:03.886+08:00",
+      "name": "get_tasks",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "1d9470f0-88db-450f-89d2-ac02ddd3fb98"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "textBody": "{\n  \"id\": \"5c211af072836e472e344aaa\"\n}"
+      },
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "118.24.156.129",
+        "path": "/api/task/rm"
+      },
+      "id": "84ea39ae-f0e4-4ac4-a9c9-9f557d599c3c",
+      "lastModified": "2018-12-26T11:12:17.009+08:00",
+      "name": "rm",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "1d9470f0-88db-450f-89d2-ac02ddd3fb98"
+    }
+  ]
+}

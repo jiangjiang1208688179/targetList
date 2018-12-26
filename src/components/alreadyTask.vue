@@ -2,26 +2,29 @@
   <div class="alreadyTarg">
     <h3>已完成的任务</h3>
     <!-- <div>{{dateTarget}}</div> -->
-    <div class="alreadyItem" v-for="(item, index) in alreadyList" v-bind:key="index">
-      <div class="completeDate">
-        <div>{{item.date.date}}</div>
-        <div class="ww">{{item.date.ww}}</div>
+    <div v-for="(item, index) in alreadyList" v-bind:key="index">
+      <div class="alreadyItem">
+        <div class="completeDate">
+          <div>{{item.date.date}}</div>
+          <div class="ww">{{item.date.ww}}</div>
+        </div>
+        <div class="completeItem">
+          <div v-for="(item1, index1) in item.name" v-bind:key="index1">{{item1}}</div>
+        </div>
       </div>
-      <div class="completeItem">
-        <div v-for="(item1, index1) in item.name" v-bind:key="index1">{{item1}}</div>
-      </div>
-      <!-- <div style="display:block;width:1000px;height:1px;background-color:#ccc"></div> -->
+      <div style="display:block;width:90%;height:2px;background-color:#f5f5f5;margin-left:5%;margin-right:5%;margin-top:20px;"></div>
     </div>
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "alreadyTask",
-  props:['dateTarget'],  //dateTarget的数据类型是: [{ date: 1545099084455, name: "a1" }]
+  props: ["dateTarget"], //dateTarget的数据类型是: [{ date: 1545099084455, name: "a1" }]
   data() {
     return {
       alreadyList: {},
-      dateTarget1:[]
+      dateTarget1: []
     };
   },
   methods: {
@@ -30,7 +33,7 @@ export default {
       var date1 = {},
         d = new Date(n),
         date = [];
-              
+
       date[0] = d.getFullYear();
       date[1] = d.getMonth() + 1;
       date[2] = d.getDate();
@@ -67,11 +70,12 @@ export default {
       let newArr = []; //按天存储,哪一天完成了什么内容,最终显示的数据结构
       // [{date:{date:2018-12-12,ww:'星期一'},name:[target1,target2]}]
       for (var date of arr) {
-        let date1 = this.transDate(date.date);  //date1有两个参数，一个date:2018-12-12，一个ww:星期几
+        let date1 = this.transDate(date.date); //date1有两个参数，一个date:2018-12-12，一个ww:星期几
         let index = -1;
         let alreadyExists = newArr.some((newDate, j) => {
-                  // console.log(date1.date, newDate.date.date);
-          if (date1.date === newDate.date.date) {   //此处注意条件的判断
+          // console.log(date1.date, newDate.date.date);
+          if (date1.date === newDate.date.date) {
+            //此处注意条件的判断
             index = j;
             return true;
           }
@@ -86,59 +90,67 @@ export default {
         }
       }
       return newArr;
+    },
+    alreadylist() {
+      axios.get("/alreadylist").then(res => {
+        this.dateTarget1 = res.data;
+        this.dateTarget1 = this["dateTarget1"].concat(this.dateTarget); //concat()拼接数据不是把拼接的数组直接赋给前边数组  而是返回一个新的连接后的数组，所以需要赋值；
+        this.alreadyList = this.mapAlreadyDate(this.dateTarget1);
+      });
     }
   },
   watch: {
-    dateTarget: function (val) {
-      this.alreadyList = this.mapAlreadyDate(this.dateTarget);
+    dateTarget: function(val) {
+      this.alreadylist();
+      // this.alreadyList = this.mapAlreadyDate(this.dateTarget);
     }
+  },
+  mounted() {
+    this.alreadylist();
+    console.log(this.dateTarget1);
   }
-  // mounted() {
-  //   console.log(this.dateTarget);
-  //   this.alreadyList = this.mapAlreadyDate(this.dateTarget)
-  // },
-  
 };
 </script>
 <style>
-.alreadyTarg{
-  margin-left:20%;
+.alreadyTarg {
+  margin-left: 20%;
   margin-right: 20%;
   background-color: white;
   width: 60%;
   height: 70%;
-  box-shadow: 0px 0px 2px 5px #F8F4E3;
+  box-shadow: 0px 0px 2px 5px #f8f4e3;
   border-radius: 5px;
 }
-.alreadyItem{
+.alreadyItem {
   display: flex;
   align-items: flex-start;
   margin-top: 15px;
-  border-bottom: 1px solid #ccc;
+  /* border-bottom: 1px solid #ccc; */
 }
-.alreadyItem div{
+.alreadyItem div {
   display: inline-block;
 }
-.completeDate{
+.completeDate {
   width: 300px;
 }
-.ww{
+.ww {
   font-size: 12px;
-  padding-left:0px;
+  padding-left: 0px;
   color: #ccc;
 }
-.completeDate div{
-  padding:10px;
+.completeDate div {
+  padding: 10px;
 }
-.completeItem{
+.completeItem {
+  text-align: left;
   margin-top: 15px;
   width: 300px;
 }
-.completeItem div{
+.completeItem div {
   padding: 5px;
   display: block;
 }
-.completeDateWw{
+.completeDateWw {
   color: #ccc;
 }
 </style>
