@@ -129,8 +129,9 @@ export default {
       now.complete_time = new Date().getTime();
       axios.post('/api/task/edit', now).then(res => {
         if(res.data.code ==20000){
-          this.cardList[index].target[index1].is_complete = !this.cardList[index].target[index1].is_complete;
-          this.cardList[index].target[index1].complete_time = new Date().getTime();
+          this.cardList[index].target[index1];
+          // this.cardList[index].target[index1].is_complete = !this.cardList[index].target[index1].is_complete;
+          // this.cardList[index].target[index1].complete_time = new Date().getTime();
         }
       }) 
     },
