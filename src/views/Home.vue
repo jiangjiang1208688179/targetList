@@ -60,6 +60,7 @@
 // import HelloWorld from '@/components/HelloWorld.vue'
 import axios from "axios";
 import alreadyTask from "@/components/alreadyTask.vue";
+import { getTasks,taskEdit, taskAdd ,taskRm} from "@/api/apis.js";
 export default {
   name: "home",
   components: {
@@ -105,35 +106,37 @@ export default {
   methods: {
     // mock数据模拟方法cardlist()
     cardlist() {
-      axios.get("/api/task/get_tasks").then(res => {
-        var list = res.data.data;
-        for (var item of list) {
-          if (item.todolist_id == "5c21f690c13ebb4ae7df1cfe") {
-            this.cardList[0].target.push(item);
-          } else if (item.todolist_id == "5c21f725c13ebb4ae6df1d00") {
-            this.cardList[1].target.push(item);
-          } else if (item.todolist_id == "5c22f19ac13ebb65c641c609") {
-            this.cardList[2].target.push(item);
+      getTasks()
+        .then(res => {
+          console.log(res);
+          var list = res.data;
+          for (var item of list) {
+            if (item.todolist_id == "5c21f690c13ebb4ae7df1cfe") {
+              this.cardList[0].target.push(item);
+            } else if (item.todolist_id == "5c21f725c13ebb4ae6df1d00") {
+              this.cardList[1].target.push(item);
+            } else if (item.todolist_id == "5c22f19ac13ebb65c641c609") {
+              this.cardList[2].target.push(item);
+            }
           }
-        }
-        // console.log("2324", this.cardList);
-      });
+        })
+        .catch(err => {
+          alert(err);
+        });
     },
     nowBoxTarget(index) {
       this.nowBox = index;
     },
     isFinished(index, index1) {
-      // console.log(index, "  ", index1);
-      var now =  this.cardList[index].target[index1];
-      now.is_complete = !now.is_complete ;
+      var now = this.cardList[index].target[index1];
+      now.is_complete = !now.is_complete;
       now.complete_time = new Date().getTime();
-      axios.post('/api/task/edit', now).then(res => {
-        if(res.data.code ==20000){
-          this.cardList[index].target[index1];
-          // this.cardList[index].target[index1].is_complete = !this.cardList[index].target[index1].is_complete;
-          // this.cardList[index].target[index1].complete_time = new Date().getTime();
-        }
-      }) 
+      taskEdit(now).then(res => {
+          this.cardList[index].target[index1]
+      })
+      .catch(err => {
+        alert(err);
+      })
     },
     checkBoxColor() {
       this.checkBox = !this.checkBox;
@@ -148,17 +151,25 @@ export default {
     },
     saveCreateItem(index) {
       if (this.createTargetName != "") {
-        axios
-          .post("/api/task/add", {
+
+        taskAdd({
             todolist_id: this.createItem[index].id,
             content: this.createTargetName
-          })
-          .then(res => {
+          }).then(res => {
             var result = res.data;
-            if (result.code == 20000) {
-              this.cardList[index].target.unshift(result.data);
-            }
+              this.cardList[index].target.unshift(result);
           });
+        // axios
+        //   .post("/api/task/add", {
+        //     todolist_id: this.createItem[index].id,
+        //     content: this.createTargetName
+        //   })
+        //   .then(res => {
+        //     var result = res.data;
+        //     if (result.code == 20000) {
+        //       this.cardList[index].target.unshift(result.data);
+        //     }
+        //   });
       } else {
         console.log("提示是否要关闭");
       }
@@ -197,13 +208,12 @@ export default {
     },
     //删除编辑项目
     deleteItem(index, index1) {
-      axios.post('/api/task/rm',{
-        id: this.cardList[index].target[index1].id
-      }).then(res=>{
-        if (res.data.code==20000){
-          this.cardList[index].target.splice(index1, 1);
-        }
-      });
+      taskRm({
+          id: this.cardList[index].target[index1].id
+        })
+        .then(res => {
+            this.cardList[index].target.splice(index1, 1);
+        });
     },
     changeTargetBox(event, index, index1) {
       // console.log(event, index, index1);
@@ -212,49 +222,49 @@ export default {
         // console.log(target);
         var now = this.cardList[index].target[index1];
         if (event == "0") {
-          now.todolist_id = '5c21f690c13ebb4ae7df1cfe'
+          now.todolist_id = "5c21f690c13ebb4ae7df1cfe";
           this.cardList[0].target.unshift(now);
         }
         if (event == "1") {
-          now.todolist_id = '5c21f725c13ebb4ae6df1d00'
+          now.todolist_id = "5c21f725c13ebb4ae6df1d00";
           this.cardList[1].target.unshift(now);
         }
         if (event == "2") {
-          now.todolist_id = '5c22f19ac13ebb65c641c609'
+          now.todolist_id = "5c22f19ac13ebb65c641c609";
           this.cardList[2].target.unshift(now);
         }
-         this.cardList[index].target.splice(index1, 1);
+        this.cardList[index].target.splice(index1, 1);
       }
-        axios.post('api/task/edit',{
-          "id": now.id,
-          "todolist_id": now.todolist_id,
-          "content": now.content,
-          "is_complete": now.is_complete,
-          "is_deleted": now.is_deleted,
-          "complete_time": now.complete_time
-        }).then(res => {
-          if(res.data.code == 20000){
-            this.cardList[index].target[index1].content = this.editeTargetName;
-            this.editecancel();
-          }
+      taskEdit({
+          id: now.id,
+          todolist_id: now.todolist_id,
+          content: now.content,
+          is_complete: now.is_complete,
+          is_deleted: now.is_deleted,
+          complete_time: now.complete_time
         })
+        .then(res => { 
+            this.cardList[index].target[index1].content = this.editeTargetName;
+            this.editecancel();         
+        });
     },
     saveEditeItem(index, index1) {
       if (this.editeTargetName) {
         var now = this.cardList[index].target[index1];
-        axios.post('api/task/edit',{
-          "id": now.id,
-          "todolist_id": now.todolist_id,
-          "content": this.editeTargetName,
-          "is_complete": now.is_complete,
-          "is_deleted": now.is_deleted,
-          "complete_time": now.complete_time
-        }).then(res => {
-          if(res.data.code == 20000){
-            this.cardList[index].target[index1].content = this.editeTargetName;
-            this.editecancel();
-          }
-        })
+        taskEdit({
+            id: now.id,
+            todolist_id: now.todolist_id,
+            content: this.editeTargetName,
+            is_complete: now.is_complete,
+            is_deleted: now.is_deleted,
+            complete_time: now.complete_time
+          })
+          .then(res => {
+              this.cardList[index].target[
+                index1
+              ].content = this.editeTargetName;
+              this.editecancel();
+          });
       }
     },
     editecancel() {
@@ -283,24 +293,19 @@ export default {
       //     }
       //   }
       // }
-      axios.get('api/task/get_tasks?is_complete=true').then(res => {
-        if(res.data.code == 20000){
+      getTasks(true).then(res => {
+        console.log(res.code);
           for (let i = 0; i < this.cardList.length; i++) {
             for (let j = 0; j < this.cardList[i].target.length; j++) {
               var item = this.cardList[i].target[j];
               if (item.is_complete) {
-                // var k = {};
-                // k.date = item.complete_time;
-                // k.content = item.content;
-                // date[date.length] = k;
                 this.cardList[i].target.splice(j, 1); //此处是为了在返回时，删除已经勾选的项目,但是splice的删除功能在for循环中是有坑的，会导致小标错乱，所以没删除一个，自动将循环的参数j--
                 j--;
               }
             }
           }
-          this.dateTarget = res.data.data;
-        }
-      })
+          this.dateTarget = res.data;
+      });
     }
   }
 };

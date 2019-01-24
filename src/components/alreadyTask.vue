@@ -18,6 +18,7 @@
 </template>
 <script>
 import axios from "axios";
+import {getTasks} from "@/api/apis"
 export default {
   name: "alreadyTask",
   props: ["dateTarget"], //dateTarget的数据类型是: [{ date: 1545099084455, name: "a1" }]
@@ -92,8 +93,8 @@ export default {
       return newArr;
     },
     alreadylist() {
-      axios.get("api/task/get_tasks?is_complete=true").then(res => {
-        this.dateTarget1 = res.data.data;
+      getTasks(true).then(res => {
+        this.dateTarget1 = res.data;
         // console.log('RES:',res.data.data);
         // this.dateTarget1 = this["dateTarget1"].concat(this.dateTarget); //concat()拼接数据不是把拼接的数组直接赋给前边数组  而是返回一个新的连接后的数组，所以需要赋值；
         this.alreadyList = this.mapAlreadyDate(this.dateTarget1);

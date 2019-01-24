@@ -1,0 +1,10 @@
+vue 对 axios接口进行二次封装，其目的是为了便于后期页面复杂后的维护和修改。
+涉及到的点：  请求过滤，require和request的过滤、如何过滤掉200code、非200code，如何过滤是那种开发环境（本地mock数据？本地服务器测试？线上环境ip？）
+期望的效果：  在vue组件中，我直接调用方法实现post 、 get请求，并传递参数
+
+
+1、在src目录下创建api接口，里边放3个js文件（index.js   apis.js   http.js）这3个文件的作用有哪些？
+2、index.js :
+3、apis.js   : 
+4、http.js  :
+5、在.vue中具体怎么使用接口
