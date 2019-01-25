@@ -76,7 +76,7 @@ export default {
   width: 100vw;
   height: 100vh;
 /* background-color: black; */
-background-image:url('../assets/login-bg.jpg')
+background-image:url('../assets/login-bg1.jpg')
 }
 .tgm-login{
   padding: 20px;

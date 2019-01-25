@@ -315,6 +315,7 @@ export default {
   text-align: center;
 }
 #card-flex {
+  margin-top: 100px;
   display: flex;
   display: -webkit-flex; /* OLD - iOS 6-, Safari 3.1-6 */
   display: -moz-flex; /*OLD - Firefox 19- H5不用考虑 */
@@ -334,7 +335,8 @@ export default {
 }
 .card {
   /* display: block; */
-  background-image: url("../../img/bag5.jpg");
+  /* background-image: url("../../img/bag5.jpg"); */
+  border-radius: 5px;
   background-size: 100% 100%;
   text-align: left;
   border: 1px solid #dcdcdc;
@@ -378,7 +380,7 @@ export default {
 .boxTarget {
   /* display: inline-block; */
   width: 30%;
-  border: 4px solid #a8dba8;
+  border: 2px solid #409dff;
   border-radius: 5px;
 }
 .createInput {
