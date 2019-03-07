@@ -4,6 +4,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
+import VCharts from 'v-charts'
 // import store from './store'
 
 Vue.prototype.$http = axios;
@@ -29,6 +30,7 @@ router.beforeEach((to, from, next)=>{
 })
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.use(VCharts);
 new Vue({
   router,
   // store,

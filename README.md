@@ -27,3 +27,9 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+###主要包含的模块
+1.  目标管理项目（计划安排）
+2.  echart图表
+	## 查看近一周、近一个月的统计数据
+3.  常见表格处理

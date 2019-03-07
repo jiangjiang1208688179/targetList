@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       username: "",
-      isCollapse: true,
+      isCollapse: false,
     };
   },
   methods: {
